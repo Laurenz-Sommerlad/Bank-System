@@ -1,0 +1,338 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import org.omg.Messaging.SyncScopeHelper;
+
+import java.lang.Math.*;
+
+
+class Geldautomat {
+	
+	private static Scanner input;
+	private static List<Bank> banken;
+	private static List<Kunde> kunden;
+	private static List<Konto> konten;
+	
+	
+	public static void main(String[] args){
+		input = new Scanner(System.in);
+		banken = new ArrayList<Bank>();
+		kunden = new ArrayList<Kunde>();
+		konten = new ArrayList<Konto>();
+		int Auswahl;
+		Bank diebank = null;
+		String ausgewähltebank ="";
+		banken.add(new Bank("Sparkasse", generateblz()));
+		banken.add(new Bank("Volksbank", generateblz()));
+		banken.add(new Bank("Commerzbank", generateblz()));
+		banken.add(new Bank("Unicredit_Bank", generateblz()));
+		banken.add(new Bank("ING-DiBa", generateblz()));
+		banken.add(new Bank("Landwirtschaftliche_Rentenbank", generateblz()));
+		banken.add(new Bank("Deutsche_Bank", generateblz()));
+		banken.add(new Bank("DZ_Bank", generateblz()));
+		banken.add(new Bank("KfW", generateblz()));
+		banken.add(new Bank("L-Bank", generateblz()));
+		String state = "";
+		String artdeskontos = "";
+		
+		System.out.println("Willkomen am Geldautomaten");
+		while(true) {
+		if(state.equals("")) {
+		System.out.println("Wir wir unterstützen momentan folgende Banken: 1. Sparkasse 2. Volksbank 3. Commerzbank 4. Unicredit Bank 5. ING-DiBa 6. Landwirtschaftliche Rentenbank 7. Deutsche Bank 8. DZ Bank 9. KfW und 10. L-Bank");
+		System.out.println("Wählen sie bitte ihre Bank aus statt Lehrzeichen benutzten sie bitte _");
+		ausgewähltebank = input.next();
+		
+		for(Bank bank : banken) {
+			if(ausgewähltebank.equals(bank.getName())) {
+				diebank = bank;
+				state = "Bank eingegeben";
+				break;
+			}
+		}
+		if(diebank == null) {
+			System.out.println("Die Bank, die sie eigegeben haben wurde nicht gefunden.");
+			System.out.println("");
+			System.out.println("");
+			System.out.println("");
+			
+			continue;
+		}
+		}
+		
+		if(state.equals("Bank eingegeben")) {
+			System.out.println("Willkomen am Geldautomaten");
+			System.out.println("");
+			System.out.println("Was möchten sie tun?");
+			System.out.println("");
+			System.out.println("1. Sich in der Bank registrieren");
+			System.out.println("2. Ein neues Konto erstellen");
+			System.out.println("3. Geld einzahlen");
+			System.out.println("4. Geld auszahlen");
+			System.out.println("5. Geld überweisen");
+			Auswahl = input.nextInt();
+		}else {
+			Auswahl = 2;
+		}
+		
+		
+		
+
+		switch (Auswahl) {
+		
+		case 1:			
+			System.out.println("Wie lautet ihn Vorname?");
+			String Vorname = input.next();
+			System.out.println("Wie lautet ihr Nachname?");
+			String Nachname = input.next();
+			int zufallskundennummer;
+			zufallskundennummer = (int) (Math.random() * 899999) + 100000;
+			
+			Kunde kunde = new Kunde(Nachname,
+					Vorname, 
+					String.valueOf(zufallskundennummer));
+			
+			System.out.println("Ihre Kundennummer lautet: " + kunde.getKundennummer());
+			System.out.println("Bitte merken sie sich ihre Kundenummmer");
+			diebank.getKunden().add(kunde);
+			state = "registriert";
+			System.out.println("");
+			System.out.println("Sie haben sich erfolgreich bei der " + ausgewähltebank + " registriert.");
+			System.out.println("");
+			System.out.println("");
+			System.out.println("Übersicht :");
+			System.out.println("");
+			System.out.println("Name : " + kunde.getVorname() + " " + kunde.getName());
+			System.out.println("Kundennummer : " + kunde.getKundennummer());
+			System.out.println("");
+			System.out.println("Wollen sie sich gleich ein Konto anlegen ?");
+			System.out.println("Antworten sie mit ja oder nein");
+			String auswahl;
+			auswahl = input.next();
+			if(auswahl.equals("ja")) {}
+			else if(auswahl.equals("nein")) {
+				System.out.println("logging out....");
+				System.out.println("Auf wiedersehen");
+				state = "";	
+				diebank = null;
+				continue;
+			}
+			
+	   case 2:
+		   
+		   if(!state.equals("neuer versuch Sparbuch") && !state.equals("neuer versuch girokonto")) {
+			System.out.println("Welche Art von Konto wollen sie haben?");
+			System.out.println("Ein Girokonto oder ein Sparbuch");
+			artdeskontos = input.next();
+		}
+		
+			Konto girokonto = null;	
+			Konto sparbuch = null;
+			if(artdeskontos.equals("Girokonto")) {
+		    	System.out.println("Okay wie lautet ihre Kundennummer?");
+		    	String loginkundennummer;
+		    	loginkundennummer = input.next();
+		    	for(Kunde kunde2 : diebank.getKunden()) {
+		    		if(loginkundennummer.equals(kunde2.getKundennummer())) {
+		    			long zufallskontonummer;
+		    			zufallskontonummer = (long) (Math.random() * Long.parseLong("8999999999")) + 1000000000;
+		    			String blz = diebank.getBlz();
+		    		    double standartguthaben;
+		    			double standartdispolimit;
+		    			double standartzinssatz;
+		    			standartguthaben = 0;
+		    			standartdispolimit = 0;
+		    			standartzinssatz = 0.01;
+		    			girokonto = new Girokonto(
+		    					String.valueOf(
+		    							zufallskontonummer
+		    							)
+		    					, 
+		    					blz, 
+		    					diebank.getName(),
+		    					standartguthaben,
+		    					standartdispolimit, 
+		    					standartzinssatz
+		    					);
+		    			diebank.getKonten().add(girokonto);
+		    			System.out.println("Ihr Girokonto wurde erfolgreich eingerichtet");
+		    			System.out.println("");
+		    			System.out.println("Ihre Konto : ");
+		    			System.out.println("");
+		    			System.out.println("Bank : " + diebank.getName());
+		    		//	System.out.println("Ihnhaber " + eewag);
+		    			System.out.println("Kontonummer : " + girokonto.getKontonummer());
+		    			System.out.println("Bankleitzahl (BLZ) : " + girokonto.getBLZ());
+		    			System.out.println("Balanze : " + girokonto.getGuthaben() + " €");
+		    			System.out.println("DispoLimit : " + girokonto.getDispoLimit() + " €");
+		    			System.out.println("Zinssatz : " + girokonto.getZinssatz() + " %");
+		    			System.out.println("Lade Terminal.....");
+		    			System.out.println("");
+		    			artdeskontos = "";
+		    			state = "Bank eingegeben";
+		    			Auswahl = 0;
+		    			break;
+		    		}
+		    		else if(!loginkundennummer.equals(kunde2.getKundennummer())) {
+		    			System.out.println("Ihre Kundennummer ist nicht im System.");
+		    			System.out.println("Option 1 = Erneut versuchen, Option 2 = registrieren");
+		    			String entscheidung;
+		    			entscheidung = input.next();
+		    			if(entscheidung.equals("1")) {
+		    				state = "neuer versuch girokonto";
+		    				continue;
+		    			}
+		    			else {
+		    				state= "";
+		    				artdeskontos = "";
+		    				diebank = null;
+		    				continue;
+		    			}
+		    		}
+		    	}
+		    	break;
+		    }
+			else if(artdeskontos.equals("Sparbuch")) {
+				
+		
+				System.out.println("Okay wie lautet ihre Kundennummer?");
+				String loginkundennummer;
+		    	loginkundennummer = input.next();
+		    	for(Kunde kunde3 : diebank.getKunden()) {
+		    		if(loginkundennummer.equals(kunde3.getKundennummer())) {
+		    			long zufallskontonummer;
+		    			zufallskontonummer = (long) (Math.random() * Long.parseLong("8999999999")) + 1000000000;
+		    			String blz = diebank.getBlz();
+		    		    double standartguthaben;
+		    			double standartdispolimit;
+		    			double standartzinssatz;
+		    			standartguthaben = 0;
+		    			standartdispolimit = 0;
+		    			standartzinssatz = 0.01;
+		    			sparbuch = new Sparbuch(
+		    					String.valueOf(
+		    							zufallskontonummer
+		    							)
+		    					, 
+		    					blz, 
+		    					diebank.getName(),
+		    					standartguthaben,
+		    					standartdispolimit, 
+		    					standartzinssatz
+		    					);
+		    			diebank.getKonten().add(sparbuch);
+		    			System.out.println("Ihr Sparbuch wurde erfolgreich eingerichtet");
+		    			System.out.println("");
+		    			System.out.println("Ihre Konto : ");
+		    			System.out.println("");
+		    			System.out.println("Inhaber : " + sparbuch.getName());
+		    			System.out.println("Kontonummer : " + sparbuch.getKontonummer());
+		    			System.out.println("Bankleitzahl (BLZ) : " + sparbuch.getBLZ());
+		    			System.out.println("Balanze : " + sparbuch.getGuthaben() + " €");
+		    			System.out.println("DispoLimit : " + sparbuch.getDispoLimit() + " €");
+		    			System.out.println("Zinssatz : " + sparbuch.getZinssatz() + " %");
+		    			System.out.println("");
+		    			System.out.println("");
+		    			System.out.println("Lade Terminal.....");
+		    			System.out.println("");
+		    			artdeskontos = "";
+		    			state = "Bank eingegeben";
+		    			Auswahl = 0;
+		    			break;
+		    		}
+		    		else if(!loginkundennummer.equals(kunde3.getKundennummer())) {
+		    			System.out.println("Ihre Kundennummer ist nicht im System.");
+		    			System.out.println("Option 1 = Erneut versuchen, Option 2 = registrieren");
+		    			String entscheidung;
+		    			entscheidung = input.next();
+		    			if(entscheidung.equals("1")) {
+		    				state = "neuer versuch Sparbuch";
+		    				continue;
+		    			}
+		    			else {
+		    				state= "";
+		    				artdeskontos = "";
+		    				diebank = null;
+		    				continue;
+		    			}
+		    		}
+		    	}break;
+
+		    }
+	   case 3:
+		   System.out.println("");
+		   System.out.println("Willkomme in dem Einzahlungs Terminal");
+		   System.out.println("Bitte geben sie ihre Kundennummer ein ");
+		   String loginkundennummereinzahlung = input.next();
+		   for(Kunde kundeeinzahlung : diebank.getKunden()) {
+	    		if(loginkundennummereinzahlung.equals(kundeeinzahlung.getKundennummer())) {
+	    			System.out.println("Bitte geben sie die Kontonummer ihres Kontos ein, auf welches sie einzahlen wollen.");
+	    			String loginkontonummereinzahlung = input.next();
+	    			for(Konto kontonummereinzahlung : diebank.getKonten()) {
+	    				if(loginkontonummereinzahlung.equals(kontonummereinzahlung.getKontonummer())) {
+	    					// hier muss noch was hin .......
+	    					System.out.println("Wie viel Geld möchten sie einzahlen?");
+	    					double geld = input.nextDouble();
+	    					
+	    				}
+	    				else if(!loginkontonummereinzahlung.equals(kontonummereinzahlung.getKontonummer())) {
+	    					System.out.println("Ihre Kontonummer exestiert nicht");
+	    					System.out.println("Option 1 = Erneut versuche, Option 2 = Konto erstellen");
+	    					String entscheidung;
+	    					entscheidung = input.next();
+	    					if(entscheidung.equals("1")) {
+	    	    				state = "neuer versuch Login Einzahlung";
+	    	    				continue;
+	    	    			}
+	    	    			else if(entscheidung.equals("2")) {
+	    	    				state= "Konto erstellen";
+	    	    				artdeskontos = "";
+	    	    				Auswahl = 2;
+	    	    				continue;
+	    				}
+	    	    			else {
+	    	    				
+	    		    				state= "";
+	    		    				artdeskontos = "";
+	    		    				diebank = null;
+	    		    				continue;
+	    		    			
+	    	    			}
+	    			}
+
+		    		
+				
+	    			}
+		    	}	
+	    		else if(!loginkundennummereinzahlung.equals(kundeeinzahlung.getKundennummer())) {
+	    			System.out.println("Ihre Kundennummer ist nicht im System.");
+	    			System.out.println("Option 1 = Erneut versuchen, Option 2 = registrieren");
+	    			String entscheidung;
+	    			entscheidung = input.next();
+	    			if(entscheidung.equals("1")) {
+	    				state = "neuer versuch Login Einzahlung";
+	    				continue;
+	    			}
+	    			else {
+	    				state= "";
+	    				artdeskontos = "";
+	    				diebank = null;
+	    				continue;
+	    			}
+		   }
+			}
+			
+		}
+		}
+	}
+
+	private static String generateblz() {
+		String blz = "";
+		
+		for(int i = 0; i < 6; i++) {
+			int asciicode = (int) (Math.random() * 25) + 65;
+			blz += (char) asciicode;
+		}
+		return blz;
+	}
+}
